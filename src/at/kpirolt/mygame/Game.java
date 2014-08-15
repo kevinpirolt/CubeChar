@@ -38,6 +38,7 @@ public class Game extends SimpleApplication{
         loadCharacter();
         mapKeys();
         createHightmap();
+        flyCam.setMoveSpeed(100f);
     }
 
     @Override
@@ -78,11 +79,12 @@ public class Game extends SimpleApplication{
     }
 
     private void createHightmap() {
+        
         mat_terrain = new Material(assetManager, 
             "Common/MatDefs/Terrain/Terrain.j3md");
         
         mat_terrain.setTexture("Alpha", assetManager.loadTexture(
-            "Textures/Hightmap/splat.png"));
+            "Textures/Hightmap/texturesplat.png"));
         
         Texture grass = assetManager.loadTexture(
             "Textures/Hightmap/grass.jpg");
@@ -104,13 +106,13 @@ public class Game extends SimpleApplication{
         
         AbstractHeightMap hightmap = null;
         Texture heightMapImage = assetManager.loadTexture(
-            "Textures/Hightmap/hightmap.png");
+            "Textures/Hightmap/heightmap.png");
         hightmap = new ImageBasedHeightMap(heightMapImage.getImage());
         hightmap.load();
         hightmap.normalizeTerrain(10f);
         
         int patchSize = 65;
-        terrain = new TerrainQuad("my terrain", patchSize, 513, hightmap.getHeightMap());
+        terrain = new TerrainQuad("my terrain", patchSize, 129, hightmap.getHeightMap());
         
         terrain.setMaterial(mat_terrain);
         terrain.setLocalTranslation(0, -100, 0);

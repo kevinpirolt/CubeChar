@@ -26,9 +26,15 @@ public class Character implements Reactor, AnimEventListener{
                     forward = false,
                     back = false;
     
-    public Character(Spatial _model) {
+    private float velX, velY;
+    private float weight;
+    
+    public Character(Spatial _model, float velX, float velY, float weight) {
         this.model = _model;
         this.initAnimations();
+        this.velX = velX;
+        this.velY = velY;
+        this.weight = weight;
     }
     
     private void initAnimations() {
@@ -57,6 +63,7 @@ public class Character implements Reactor, AnimEventListener{
             this.forward = true;
             this.channel.setAnim("CubeWalk");
             this.channel.setLoopMode(LoopMode.Loop);
+            this.model.move((float)((this.velX*tpf)/(0.5*this.weight)), 0, 0);
         }
     }
 
@@ -73,7 +80,7 @@ public class Character implements Reactor, AnimEventListener{
     }
 
     public void jump() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {

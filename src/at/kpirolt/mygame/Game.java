@@ -8,17 +8,12 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Texture;
-import com.jme3.texture.Texture.WrapMode;
 
 /**
  *
@@ -29,7 +24,6 @@ public class Game extends SimpleApplication{
     private Character character;
     private MasterListener ml;
     private TerrainQuad terrain;
-    private Material mat_terrain;
     
     @Override
     public void simpleInitApp() {
@@ -61,7 +55,7 @@ public class Game extends SimpleApplication{
     private void loadCharacter() {
         Spatial c = assetManager.loadModel("Models/cubeChar/cubeChar.mesh.xml");
         c.center();
-        this.character = new Character(c);
+        this.character = new Character(c, 10f, 10f, 1);
         character.addToNode(rootNode);
     }
 
@@ -80,41 +74,14 @@ public class Game extends SimpleApplication{
 
     private void createHightmap() {
         
-        mat_terrain = new Material(assetManager, 
-            "Common/MatDefs/Terrain/Terrain.j3md");
-        
-        mat_terrain.setTexture("Alpha", assetManager.loadTexture(
-            "Textures/Hightmap/texturesplat.png"));
-        
-        Texture grass = assetManager.loadTexture(
-            "Textures/Hightmap/grass.jpg");
-        grass.setWrap(WrapMode.Repeat);
-        mat_terrain.setTexture("Tex1", grass);
-        mat_terrain.setFloat("Tex1Scale", 64f);
-        
-        Texture dirt = assetManager.loadTexture(
-            "Textures/Hightmap/dirt.jpg");
-        dirt.setWrap(WrapMode.Repeat);
-        mat_terrain.setTexture("Tex2", dirt);
-        mat_terrain.setFloat("Tex2Scale", 32f);
-        
-        Texture rock = assetManager.loadTexture(
-            "Textures/Hightmap/rock.jpg");
-        rock.setWrap(WrapMode.Repeat);
-        mat_terrain.setTexture("Tex3", rock);
-        mat_terrain.setFloat("Tex3Scale", 128f);
-        
-        AbstractHeightMap hightmap = null;
-        Texture heightMapImage = assetManager.loadTexture(
-            "Textures/Hightmap/heightmap.png");
-        hightmap = new ImageBasedHeightMap(heightMapImage.getImage());
-        hightmap.load();
-        hightmap.normalizeTerrain(10f);
-        
         int patchSize = 65;
-        terrain = new TerrainQuad("my terrain", patchSize, 129, hightmap.getHeightMap());
+        terrain = HeightMapLoader.loadHeightMap("Textures/Hightmap/heightmap.png", 513, 
+                                                                        "Textures/Hightmap/texturesplat.png", 
+                                                                        "Textures/Hightmap/grass.jpg",
+                                                                        "Textures/Hightmap/dirt.jpg", 
+                                                                        "Textures/Hightmap/rock.jpg", 
+                                                                        assetManager, patchSize);
         
-        terrain.setMaterial(mat_terrain);
         terrain.setLocalTranslation(0, -100, 0);
         terrain.setLocalScale(2f, 1f, 2f);
         rootNode.attachChild(terrain);
